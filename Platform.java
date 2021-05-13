@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -6,7 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
 import javax.swing.JComponent;
-public class Platform extends JComponent 
+public class Platform extends JComponent
 {
 	private double x, y;
 	private int w, h;
@@ -22,7 +21,7 @@ public class Platform extends JComponent
 		this.h = h;
 		color = c;
 	}
-	public Rectangle getRect()
+	public Rectangle getHitbox()
 	{
 		Rectangle rect = new Rectangle(this.getX(),this.getY(),this.getWidth(),this.getHeight());
 		return rect;
