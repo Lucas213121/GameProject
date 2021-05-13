@@ -236,7 +236,7 @@ public class ConnectIn extends JFrame implements ActionListener
 			if(!onGround)
 			{
 				player.setFalling(true);	
-				
+				player.resetJumps();
 			}
 			if(player.isTryGrab())
 			{
@@ -305,9 +305,11 @@ class Handler implements Runnable
 				switch(message)
 				{	
 				case "W":
-					if(!player.isFalling())
+					//if(!player.isFalling())
+					if(player.numJumpsLeft() > 0)
 					{
 						//jump speed
+						player.jump();
 						player.setDy(-3*SPEED);
 						player.setFalling(true);
 					}
@@ -317,7 +319,7 @@ class Handler implements Runnable
 					player.setDx(-SPEED);
 					break;
 				case "S":
-					player.setDy(SPEED);
+					//player.setDy();
 					break;
 				case "D":
 					player.setDx(SPEED);

@@ -21,6 +21,8 @@ public class Player extends JComponent implements Updatable
 	private JFrame frame;
 	private boolean tryGrab = false;
 	private Player heldBy, holding;
+	private int maxJumps = 2;
+	private int jumps = maxJumps; 
 	public Player(double x, double y, Color c, JFrame frame)
 	{
 		
@@ -77,6 +79,9 @@ public class Player extends JComponent implements Updatable
 	}
 	public void setFalling(boolean b) { falling = b;}
 	public boolean isFalling() { return falling;}
+	public void resetJumps() { jumps = maxJumps;}
+	public void jump() { jumps--;}
+	public int numJumpsLeft() { return jumps;}
 	
 	
 	public void update()
@@ -125,5 +130,6 @@ public class Player extends JComponent implements Updatable
 		g.fillRect(0, 0, 30, 30);
 		
 	}
+	
 		
 }
