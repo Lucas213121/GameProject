@@ -12,15 +12,63 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+
+/*
+public void setTryGrab(boolean b) {tryGrab = b;}
+public boolean isTryGrab() {return tryGrab;}
+public void setHeldBy(Player p) {heldBy = p;}
+public Player getHeldBy() {return heldBy;}
+public void makeInvolentaryFriend(Player p) {holding = p;}
+public Player getInvolentaryFriend() {return holding;}
+
+
+
+
+
+ */
 public class ConnectIn extends JFrame implements ActionListener
 {
 	public static ArrayList<Updatable> characters;
+	public static ArrayList<Player> players;
 	public static JFrame frame; 
 	private static int numPlayers = 0;
-
+	public ArrayList<Platform> platforms;
+	
 	public ConnectIn()
 	{
+	
+		characters = new ArrayList<Updatable>();
+		platforms = new ArrayList<Platform>();
+		players = new ArrayList<Player>();
+			
+		setBounds(100, 100, 600, 600);
+		setResizable(false);
+		setTitle("Game");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(null);
+		
+		Platform platform;
+		
+		//how to create new platforms for now
+		
+		platform = new Platform(0,500,600,40,Color.RED);
+		platforms.add(platform);
+		add(platform);
+		
+		platform = new Platform(200,450,100,40,Color.RED);
+		platforms.add(platform);
+		add(platform);
+		
+		platform = new Platform(300,400,100,40,Color.RED);
+		platforms.add(platform);
+		add(platform);
+		
+		platform = new Platform(400,350,100,40,Color.RED);
+		platforms.add(platform);
+		add(platform);
+		
 		frame = this;
+
 		characters = new ArrayList<Updatable>();
 		setBounds(100, 100, 600, 600);
 		setResizable(false);
@@ -49,11 +97,12 @@ public class ConnectIn extends JFrame implements ActionListener
 				System.out.println("server accepted client");
 				
 				
-				Player player = new Player(Math.random()*200,Math.random()*200,Color.RED);
+				Player player = new Player(Math.random()*200,Math.random()*200,Color.RED, frame);
 				
 				Handler clientThread = new Handler(client,numPlayers, player);
 				
 				characters.add(player);
+				players.add(player);
 				frame.add(player);
 				frame.repaint();
 				new Thread(clientThread).start();
@@ -67,9 +116,7 @@ public class ConnectIn extends JFrame implements ActionListener
 				System.out.println("there was an issue");
 			}
 		}
-
 	}
-	
 	public static void add_client()
 	{
 		System.out.println("clients: "+ (++numPlayers));
@@ -88,6 +135,132 @@ public class ConnectIn extends JFrame implements ActionListener
 		for(Updatable character: characters)
 		{		
 			character.update();
+		}
+		for(Player player : players) 
+		{
+			boolean onGround = false;
+			for(Platform p : platforms)
+			{
+				if(p.getHitbox().intersects(player.getHitbox()))
+				{
+					int playerCY = player.getY()+player.getHeight()/2;
+					int pCY = p.getY()+p.getHeight()/2;
+					int playerCX = player.getX()+player.getWidth()/2;
+					int pCX = p.getX()+p.getWidth()/2;
+					
+					
+					if (playerCY < pCY)
+					{
+						//top left quarter
+						if (playerCX < pCX) 
+						{
+							if ((p.getY() - player.getY()-player.getHeight()) > p.getX()-player.getX()-player.getWidth()) 
+							{
+								player.setFalling(false);
+								player.setDy(0);
+								player.setY(p.getY()-player.getHeight());
+							}
+							else
+							{
+								
+								//player.setDx(0);
+								player.setX(p.getX()-player.getWidth());
+							}
+						}
+						
+						//top right quarter
+						else
+						{
+							if((p.getY() - player.getY()-player.getHeight()) > player.getX() - p.getX() - p.getWidth()) 
+							{
+								
+								player.setFalling(false);
+								player.setDy(0);
+								player.setY(p.getY()-player.getHeight());
+							}
+							else
+							{
+								
+								//player.setDx(0);
+								player.setX(p.getX()+p.getWidth());
+							}
+						}
+					}
+					else
+					{
+					 	//bottom left quarter
+						if (playerCX < pCX) 
+						{
+							if ((player.getY()-p.getY()-p.getHeight()) > p.getX()-player.getX()-player.getWidth()) 
+							{
+								
+								player.setDy(0);
+								player.setY(p.getY()+p.getHeight());
+							}
+							else
+							{
+								
+								//player.setDx(0);
+								player.setX(p.getX()-player.getWidth());
+							}
+						}
+						//bottom right quarter
+						else
+						{
+							if((player.getY()-p.getY()-p.getHeight()) > player.getX() - p.getX() - p.getWidth()) 
+							{
+								player.setDy(0);
+								player.setY(p.getY()+p.getHeight());
+							}
+							else
+							{
+								
+								//player.setDx(0);
+								player.setX(p.getX()+p.getWidth());
+							}
+						}
+					}
+	
+				}
+				//testing if ground is beneath player
+				if(!player.isFalling())	
+				{
+					// tests if bottom left corner, bottom center point, or bottom right corner is on any platform
+					if(p.getHitbox().contains(player.getX(),player.getY()+player.getHeight()) || p.getHitbox().contains(player.getX()+player.getWidth()/2,player.getY()+player.getHeight()) || p.getHitbox().contains(player.getX()+player.getWidth(),player.getY()+player.getHeight()))
+					{
+						onGround = true;
+					}
+					
+				}
+			}	
+			if(!onGround)
+			{
+				player.setFalling(true);	
+				
+			}
+			if(player.isTryGrab())
+			{
+				if(player.getHeldBy() == null)
+				{
+					for(Player p : players)
+					{
+						if(!p.equals(player) && Math.hypot(player.getX()-p.getX(),player.getY() - p.getY()) < 30)
+						{
+							player.makeInvolentaryFriend(p);
+							p.setHeldBy(player);
+						}
+					}
+				}
+				else	
+				{
+					if(Math.random() < .2)
+					player.setDx(0);
+					player.setDy(-4);
+					player.getHeldBy().makeInvolentaryFriend(null);
+					player.setHeldBy(null);
+					
+				}
+			}
 		}
 		repaint();
 	}
@@ -119,8 +292,9 @@ class Handler implements Runnable
 			String message;
 			
 			name = in.readLine();
+			player.setName(name);
+			final int SPEED = 2;	
 			
-			final int SPEED = 2;		
 			while((message = in.readLine()) != null)
 			{
 				if(message.equals("New Player"))
@@ -131,7 +305,12 @@ class Handler implements Runnable
 				switch(message)
 				{	
 				case "W":
-					player.setDy(-SPEED);
+					if(!player.isFalling())
+					{
+						//jump speed
+						player.setDy(-3*SPEED);
+						player.setFalling(true);
+					}
 					break;
 				case "A":
 					
@@ -145,7 +324,7 @@ class Handler implements Runnable
 					break;
 				
 				case "w":
-					player.setDy(0);
+					//player.setDy(0);
 					break;
 				case "s":
 					player.setDy(0);
@@ -156,8 +335,24 @@ class Handler implements Runnable
 				case "d":
 					player.setDx(0);
 					break;
+				case "H":
+					player.setTryGrab(true);
+
+					break;
+				case "h":
+					
+					player.setTryGrab(false);
+					if(player.getInvolentaryFriend() != null)
+					{
+						Player f = player.getInvolentaryFriend();
+						f.setHeldBy(null);
+						f.setDx(4);
+						f.setDy(-4);
+						player.makeInvolentaryFriend(null);
+						
+					}
+					break;
 				}
-				out.print("||");
 					
 			}
 			System.out.print("why are you like this");
