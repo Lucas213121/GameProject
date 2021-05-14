@@ -8,12 +8,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class Client extends JFrame
+public class EchoClient extends JFrame
 {
 	
 	static boolean WTrue = true;
@@ -22,7 +23,7 @@ public class Client extends JFrame
 	static boolean STrue = true;
 	static boolean HTrue = true;
 	
-	public Client(PrintWriter pr)
+	public EchoClient(PrintWriter pr)
 	{
 		
 		
@@ -31,28 +32,35 @@ public class Client extends JFrame
 		setResizable(false);
 		setLayout(null);
 		
-		setSize(200, 200);
+		setSize(700, 500);
 		setLocation(100,100);
 		
-		JLabel j = new JLabel("Name: ");
-		JTextField t = new JTextField();
-		j.setBounds(20, 25, 100, 25);
-		j.setFocusable(false);
+		final JLabel j = new JLabel("Name: ");
+		final JTextField t = new JTextField();
+		j.setBounds(150, 200, 100,100);
 		
 		add(j);
 		
-		t.setBounds(20, 60, 100, 50);
+		t.setBounds(250, 200, 100, 100);
 		add(t);
 		
-		/*
-		JCheckBox check = new JCheckBox("Done: ");
-		check.setBounds(250, 450, 50,50);
+		final JButton send = new JButton("Send It");
+		send.setBounds(400, 200, 100, 100);
 		
-		add(check);
+		send.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				p.println(t.getText());
+				j.setFocusable(false);
+				t.setFocusable(false);
+				send.setFocusable(false);
+			}
+			
+		});
 		
-		if(check.is)
-		*/
-		p.println(t.getText());
+		add(send);
+		
 		
 		this.addKeyListener(new KeyListener()
 		{
@@ -175,16 +183,14 @@ public class Client extends JFrame
 		
 		try
 		{
-			//Lucas Home:    192.168.1.173
-			//Vishnu School: 10.30.36.85 
-			Socket client = new Socket("192.168.1.173",9999);
+			Socket client = new Socket("10.30.36.85",9999);
 						
 			BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			PrintWriter out = new PrintWriter(client.getOutputStream(),true);
 			
 			Scanner keyboard = new Scanner(System.in);
 			
-			new Client(out);
+			new EchoClient(out);
 			
 			String input;
 			
