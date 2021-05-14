@@ -244,7 +244,7 @@ public class ConnectIn extends JFrame implements ActionListener
 				{
 					for(Player p : players)
 					{
-						if(!p.equals(player) && Math.hypot(player.getX()-p.getX(),player.getY() - p.getY()) < 30)
+						if(p.getY() < player.getY() + player.getHeight() && !p.equals(player) && Math.hypot(player.getX()-p.getX(),player.getY() - p.getY()) < 30)
 						{
 							player.makeInvolentaryFriend(p);
 							p.setHeldBy(player);
@@ -253,12 +253,13 @@ public class ConnectIn extends JFrame implements ActionListener
 				}
 				else	
 				{
-					if(Math.random() < .2)
-					player.setDx(0);
-					player.setDy(-4);
-					player.getHeldBy().makeInvolentaryFriend(null);
-					player.setHeldBy(null);
-					
+					if(Math.random() < .1)
+					{
+						player.setDx(0);
+						player.setDy(-4);
+						player.getHeldBy().makeInvolentaryFriend(null);
+						player.setHeldBy(null);
+					}
 				}
 			}
 		}
