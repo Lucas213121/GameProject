@@ -240,6 +240,8 @@ public class ConnectIn extends JFrame implements ActionListener
 			}
 			if(player.isTryGrab())
 			{
+				player.setTryGrab(false);
+				
 				if(player.getHeldBy() == null)
 				{
 					for(Player p : players)

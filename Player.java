@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
+import java.time.Instant;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,7 +24,9 @@ public class Player extends JComponent implements Updatable
 	private boolean tryGrab = false;
 	private Player heldBy, holding;
 	private int maxJumps = 2;
-	private int jumps = maxJumps; 
+	private int jumps = maxJumps;
+	private long time;
+	
 	public Player(double x, double y, Color c, JFrame frame)
 	{
 		
@@ -58,8 +62,10 @@ public class Player extends JComponent implements Updatable
 	public double getDx() {return dx;}
 	public void setDy(double dy) { this.dy = dy;}
 	public double getDy() { return dy;}
+	
 	public void setTryGrab(boolean b) {tryGrab = b;}
 	public boolean isTryGrab() {return tryGrab;}
+	
 	public void setHeldBy(Player p) {heldBy = p;}
 	public Player getHeldBy() {return heldBy;}
 	public void makeInvolentaryFriend(Player p) {holding = p;}
@@ -79,7 +85,6 @@ public class Player extends JComponent implements Updatable
 	}
 	public void setFalling(boolean b) { falling = b;}
 	public boolean isFalling() { return falling;}
-	
 	public void resetJumps() { jumps = maxJumps;}
 	public void jump() { jumps--;}
 	public int numJumpsLeft() { return jumps;}
@@ -88,6 +93,7 @@ public class Player extends JComponent implements Updatable
 	public void update()
 	{
 
+		time = Instant.now().toEpochMilli();
 		if(heldBy != null)
 		{
 			x = heldBy.getX();
@@ -113,7 +119,7 @@ public class Player extends JComponent implements Updatable
 		this.setLocation((int)(x), (int)(y)); 
 		
 		this.setPos(x, y);
-		nameTag.setLocation((int)x + w/2 - nameTag.getWidth()/2, (int)y - 20);
+		nameTag.setLocation((int)x + w/2 - nameTag.getWidth()/2, (int)y - 10);
 		
 		repaint();
 		
