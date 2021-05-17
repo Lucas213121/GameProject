@@ -113,6 +113,16 @@ public class Player extends JComponent implements Updatable
 			}
 		}
 		
+		if(x < 0)
+		{
+			x = 0;
+		}
+		
+		if(x > 600 - w)
+		{
+			x = 600-w;
+		}
+		
 		this.setLocation((int)(x), (int)(y)); 
 		
 		this.setPos(x, y);

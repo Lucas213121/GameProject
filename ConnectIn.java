@@ -235,7 +235,10 @@ public class ConnectIn extends JFrame implements ActionListener
 			}	
 			if(!onGround)
 			{
-				player.setFalling(true);	
+				player.setFalling(true);
+			}
+			else
+			{
 				player.resetJumps();
 			}
 			if(player.isTryGrab())
@@ -336,9 +339,11 @@ class Handler implements Runnable
 					break;
 				case "a":
 					player.setDx(0);
+					player.setFacing("a");
 					break;
 				case "d":
 					player.setDx(0);
+					player.setFacing("d");
 					break;
 				case "H":
 					player.setTryGrab(true);
@@ -351,8 +356,19 @@ class Handler implements Runnable
 					{
 						Player f = player.getInvolentaryFriend();
 						f.setHeldBy(null);
-						f.setDx(4);
-						f.setDy(-4);
+						int r = (int) (Math.random()*20+4);
+						if(player.getFacing().equals("d"))
+						{
+							f.setDx(r);
+							f.setDy(-r);
+						}
+						
+						else if(player.getFacing().equals("a"))
+						{
+							f.setDx(-r);
+							f.setDy(-r);
+						}
+						
 						player.makeInvolentaryFriend(null);
 						
 					}
