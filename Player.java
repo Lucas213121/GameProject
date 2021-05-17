@@ -79,6 +79,7 @@ public class Player extends JComponent implements Updatable
 	}
 	public void setFalling(boolean b) { falling = b;}
 	public boolean isFalling() { return falling;}
+	
 	public void resetJumps() { jumps = maxJumps;}
 	public void jump() { jumps--;}
 	public int numJumpsLeft() { return jumps;}
@@ -112,7 +113,7 @@ public class Player extends JComponent implements Updatable
 		this.setLocation((int)(x), (int)(y)); 
 		
 		this.setPos(x, y);
-		nameTag.setLocation((int)x + w/2 - nameTag.getWidth()/2, (int)y - 10);
+		nameTag.setLocation((int)x + w/2 - nameTag.getWidth()/2, (int)y - 20);
 		
 		repaint();
 		
