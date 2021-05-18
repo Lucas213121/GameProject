@@ -104,6 +104,14 @@ public class ConnectIn extends JFrame implements ActionListener
 				characters.add(player);
 				players.add(player);
 				frame.add(player);
+				
+				/*
+				player = new Player(Math.random()*200,Math.random()*200,Color.RED, frame);
+				characters.add(player);
+				players.add(player);
+				frame.add(player);
+				*/
+				
 				frame.repaint();
 				new Thread(clientThread).start();
 				add_client();
@@ -163,7 +171,6 @@ public class ConnectIn extends JFrame implements ActionListener
 							else
 							{
 								
-								//player.setDx(0);
 								player.setX(p.getX()-player.getWidth());
 							}
 						}
@@ -181,7 +188,6 @@ public class ConnectIn extends JFrame implements ActionListener
 							else
 							{
 								
-								//player.setDx(0);
 								player.setX(p.getX()+p.getWidth());
 							}
 						}
@@ -200,8 +206,8 @@ public class ConnectIn extends JFrame implements ActionListener
 							else
 							{
 								
-								//player.setDx(0);
 								player.setX(p.getX()-player.getWidth());
+								
 							}
 						}
 						//bottom right quarter
@@ -215,7 +221,6 @@ public class ConnectIn extends JFrame implements ActionListener
 							else
 							{
 								
-								//player.setDx(0);
 								player.setX(p.getX()+p.getWidth());
 							}
 						}
@@ -239,6 +244,7 @@ public class ConnectIn extends JFrame implements ActionListener
 			}
 			else
 			{
+				player.addFriction();
 				player.resetJumps();
 			}
 			if(player.isTryGrab())
@@ -321,29 +327,28 @@ class Handler implements Runnable
 					}
 					break;
 				case "A":
-					
 					player.setDx(-SPEED);
+					player.setFacing("a");
 					break;
 				case "S":
-					//player.setDy();
+					player.setDy(0);
 					break;
 				case "D":
 					player.setDx(SPEED);
+					player.setFacing("d");
+					
 					break;
 				
 				case "w":
 					//player.setDy(0);
 					break;
 				case "s":
-					player.setDy(0);
 					break;
 				case "a":
 					player.setDx(0);
-					player.setFacing("a");
 					break;
 				case "d":
 					player.setDx(0);
-					player.setFacing("d");
 					break;
 				case "H":
 					player.setTryGrab(true);
@@ -356,16 +361,16 @@ class Handler implements Runnable
 					{
 						Player f = player.getInvolentaryFriend();
 						f.setHeldBy(null);
-						int r = (int) (Math.random()*20+4);
+						int r = (int) (4);
 						if(player.getFacing().equals("d"))
 						{
-							f.setDx(r);
+							f.setEDx(r);
 							f.setDy(-r);
 						}
 						
-						else if(player.getFacing().equals("a"))
+						else //if(player.getFacing().equals("a"))
 						{
-							f.setDx(-r);
+							f.setEDx(-r);
 							f.setDy(-r);
 						}
 						

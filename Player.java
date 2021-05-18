@@ -13,7 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 public class Player extends JComponent implements Updatable
 {
-	private double dx, dy, x, y;
+	
+	private double dx, dy, x, y, edx, edy;
 	private int w = 20, h = 20; 
 	private Color color;
 	private boolean falling = true;
@@ -66,6 +67,21 @@ public class Player extends JComponent implements Updatable
 	public void makeInvolentaryFriend(Player p) {holding = p;}
 	public Player getInvolentaryFriend() {return holding;}
 
+	public void setEDx(double edx) { this.edx = edx;}
+	public double getEDx() {return edx;}
+	public void addFriction() 
+	{
+		
+		if(edx  > 0)
+			edx -= 0.03;
+		else
+			edx += 0.03;
+		if(Math.abs(edx) < 0.1)
+		{
+			edx = 0;
+		}
+	}
+	
 	public void setX(double i) { x = i;}
 	public void setY(double i) { y = i;}
 	
@@ -96,11 +112,14 @@ public class Player extends JComponent implements Updatable
 			x = heldBy.getX();
 			y = heldBy.getY()-30;
 			dx = 0;
+			edx = 0;
 			dy = 0;
 		}
 		
 		else
 		{
+			addFriction();
+			x += edx; 
 			x += dx;
 		
 		//y += dy;
@@ -113,14 +132,15 @@ public class Player extends JComponent implements Updatable
 			}
 		}
 		
+		
 		if(x < 0)
 		{
 			x = 0;
 		}
 		
-		if(x > 600 - w)
+		if(x > 550 - w)
 		{
-			x = 600-w;
+			x = 550-w;
 		}
 		
 		this.setLocation((int)(x), (int)(y)); 
