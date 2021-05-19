@@ -22,9 +22,10 @@ public class Player extends JComponent implements Updatable
 	private JFrame frame;
 	private boolean tryGrab = false;
 	private Player heldBy, holding;
-	private int maxJumps = 2;
+	private int maxJumps = 4;
 	private int jumps = maxJumps; 
 	private String facing = "d";
+	private boolean wallSliding = false;
 	public Player(double x, double y, Color c, JFrame frame)
 	{
 		
@@ -104,6 +105,9 @@ public class Player extends JComponent implements Updatable
 	public String getFacing(){ return facing;}
 	public void setFacing(String s){ facing = s;}
 	
+	public boolean isWallSliding() {return wallSliding;}
+	public void setWallSliding(boolean b) {wallSliding = b;}
+	
 	public void update()
 	{
 
@@ -128,7 +132,21 @@ public class Player extends JComponent implements Updatable
 			{
 				y += dy;
 				//gravity acc.
-				dy += 0.2;
+				if(!wallSliding)
+				{
+					dy += 0.05;
+				}
+				else
+				{
+					
+					if(dy > 0.3);
+					{
+						dy = 0.3;
+					}
+					
+				}
+				
+				
 			}
 		}
 		
@@ -160,10 +178,11 @@ public class Player extends JComponent implements Updatable
 	
 	public void paintComponent(Graphics g)
 	{
-		g.setColor(Color.GREEN);
+		g.setColor(color);
 		g.fillRect(0, 0, 30, 30);
 		
 	}
+	
 	
 		
 }

@@ -63,7 +63,7 @@ public class ConnectIn extends JFrame implements ActionListener
 		platforms.add(platform);
 		add(platform);
 		
-		platform = new Platform(400,350,100,40,Color.RED);
+		platform = new Platform(400,150,100,240,Color.RED);
 		platforms.add(platform);
 		add(platform);
 		
@@ -147,6 +147,7 @@ public class ConnectIn extends JFrame implements ActionListener
 		for(Player player : players) 
 		{
 			boolean onGround = false;
+			player.setWallSliding(false);
 			for(Platform p : platforms)
 			{
 				if(p.getHitbox().intersects(player.getHitbox()))
@@ -172,6 +173,7 @@ public class ConnectIn extends JFrame implements ActionListener
 							{
 								
 								player.setX(p.getX()-player.getWidth());
+								player.setWallSliding(true);
 							}
 						}
 						
@@ -189,6 +191,7 @@ public class ConnectIn extends JFrame implements ActionListener
 							{
 								
 								player.setX(p.getX()+p.getWidth());
+								player.setWallSliding(true);
 							}
 						}
 					}
@@ -207,7 +210,7 @@ public class ConnectIn extends JFrame implements ActionListener
 							{
 								
 								player.setX(p.getX()-player.getWidth());
-								
+								player.setWallSliding(true);
 							}
 						}
 						//bottom right quarter
@@ -220,8 +223,8 @@ public class ConnectIn extends JFrame implements ActionListener
 							}
 							else
 							{
-								
 								player.setX(p.getX()+p.getWidth());
+								player.setWallSliding(true);
 							}
 						}
 					}
@@ -305,7 +308,7 @@ class Handler implements Runnable
 			
 			name = in.readLine();
 			player.setName(name);
-			final int SPEED = 2;	
+			final int SPEED = 1;//2;	
 			
 			while((message = in.readLine()) != null)
 			{
@@ -317,10 +320,29 @@ class Handler implements Runnable
 				switch(message)
 				{	
 				case "W":
+					
 					//if(!player.isFalling())
 					if(player.numJumpsLeft() > 0)
 					{
+						
+						if(player.isWallSliding())
+						{
+							if(player.getFacing().equals("a"))
+							{
+								player.setEDx(3);
+								
+							}
+							else
+							{
+								player.setEDx(-3);
+								
+							}
+						}
+						
 						//jump speed
+						
+						player.setWallSliding(false);
+						//player.setDx(0);
 						player.jump();
 						player.setDy(-3*SPEED);
 						player.setFalling(true);
