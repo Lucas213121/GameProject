@@ -51,19 +51,15 @@ public class ConnectIn extends JFrame implements ActionListener
 		
 		//how to create new platforms for now
 		
-		platform = new Platform(0,500,600,40,Color.RED);
+		platform = new Platform(0,500,250,100,Color.BLUE,0);
 		platforms.add(platform);
 		add(platform);
 		
-		platform = new Platform(200,450,100,40,Color.RED);
+		platform = new Platform(350,500,250,100,Color.BLUE,0);
 		platforms.add(platform);
 		add(platform);
 		
-		platform = new Platform(300,400,100,40,Color.RED);
-		platforms.add(platform);
-		add(platform);
-		
-		platform = new Platform(400,150,100,240,Color.RED);
+		platform = new Platform(250,550,100,100,Color.RED,25);
 		platforms.add(platform);
 		add(platform);
 		
@@ -152,6 +148,8 @@ public class ConnectIn extends JFrame implements ActionListener
 			{
 				if(p.getHitbox().intersects(player.getHitbox()))
 				{
+					
+					
 					int playerCY = player.getY()+player.getHeight()/2;
 					int pCY = p.getY()+p.getHeight()/2;
 					int playerCX = player.getX()+player.getWidth()/2;
@@ -227,6 +225,12 @@ public class ConnectIn extends JFrame implements ActionListener
 								player.setWallSliding(true);
 							}
 						}
+					}
+					if(p.getDamage() > 0)
+					{
+						player.changeHealth(-p.getDamage());
+						player.setDy(-10);
+						player.setFalling(true);
 					}
 	
 				}
@@ -308,7 +312,7 @@ class Handler implements Runnable
 			
 			name = in.readLine();
 			player.setName(name);
-			final int SPEED = 1;//2;	
+			final int SPEED = 2;	
 			
 			while((message = in.readLine()) != null)
 			{
@@ -329,22 +333,25 @@ class Handler implements Runnable
 						{
 							if(player.getFacing().equals("a"))
 							{
-								player.setEDx(3);
+								player.setEDx(1*SPEED);
 								
 							}
 							else
 							{
-								player.setEDx(-3);
+								player.setEDx(-1*SPEED);
 								
 							}
+							player.setDy(-2*SPEED);
 						}
-						
+						else
+						{
+							player.setDy(-3*SPEED);
+						}
 						//jump speed
 						
 						player.setWallSliding(false);
 						//player.setDx(0);
 						player.jump();
-						player.setDy(-3*SPEED);
 						player.setFalling(true);
 					}
 					break;
@@ -415,73 +422,3 @@ class Handler implements Runnable
 	}
 	
 }
-
-
-
-
-/*import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-
-public class ConnectIn 
-{
-
-	public static void main(String[] args) throws IOException 
-	{
-		int port = 101;
-		ServerSocket server = new ServerSocket(port);
-		int numPlayers = 0;
-		while(true)//for(;;)
-		{
-			try
-			{
-				System.out.println("Server listening...");
-				Socket client = server.accept();
-				System.out.println("server accepted client");
-				
-				
-				BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				PrintWriter out = new PrintWriter(client.getOutputStream(),true);
-				
-				String message;
-				
-				System.out.print("Friend!");	
-				while((message = in.readLine()) != null)
-				{
-					System.out.println("Message recieved: " + message);
-					
-					for(int i = 0; i < message.length();i++)
-					{
-						if(message.equals("New Player"))
-						{
-							 out.print(numPlayers++);
-						}
-						switch(message.substring(i, i+1))
-						{	
-						case "w":
-							break;
-						case "a":
-							break;
-						case "s":
-							break;
-						case "d":
-							break;
-						}
-					}
-					
-				}
-				client.close();
-			}
-			catch(Exception e)
-			{
-				System.out.println("there was an issue");
-			}
-		}
-
-	}
-
-}
-*/

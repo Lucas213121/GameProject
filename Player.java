@@ -26,6 +26,8 @@ public class Player extends JComponent implements Updatable
 	private int jumps = maxJumps; 
 	private String facing = "d";
 	private boolean wallSliding = false;
+	private int maxHealth = 100;
+	private int health = maxHealth;
 	public Player(double x, double y, Color c, JFrame frame)
 	{
 		
@@ -52,8 +54,9 @@ public class Player extends JComponent implements Updatable
 		return new Rectangle(this.getX(),this.getY(),this.getWidth(),this.getHeight());
 		
 	}
-	
-	
+	public void changeHealth(int c){health += c;}
+	public void resetHealth(){health = maxHealth;}
+	public int getHealth(){return health;}
 	
 	public void setName(String s) { nameTag.setText(s);}
 	public String getName() {return nameTag.getText();}
@@ -111,6 +114,15 @@ public class Player extends JComponent implements Updatable
 	public void update()
 	{
 
+		if(health <= 0)
+		{
+			x = 100;
+			y = 100;
+			dx = 0;
+			dy = 0;
+			edx = 0;
+			resetHealth();
+		}
 		if(heldBy != null)
 		{
 			x = heldBy.getX();
@@ -134,14 +146,14 @@ public class Player extends JComponent implements Updatable
 				//gravity acc.
 				if(!wallSliding)
 				{
-					dy += 0.05;
+					dy += 0.2;
 				}
 				else
 				{
-					
-					if(dy > 0.3);
+					edx = 0; 
+					if(dy > 1);
 					{
-						dy = 0.3;
+						dy = 1;
 					}
 					
 				}
