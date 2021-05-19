@@ -59,7 +59,20 @@ public class ConnectIn extends JFrame implements ActionListener
 		platforms.add(platform);
 		add(platform);
 		
-		platform = new Platform(250,550,100,100,Color.RED,25);
+		platform = new Platform(250,300,100,300,Color.RED,25);
+		platforms.add(platform);
+		add(platform);
+		
+		
+		platform = new Platform(250,275,100,25,Color.BLUE,0);
+		platforms.add(platform);
+		add(platform);
+		
+		platform = new Platform(50,375,100,25,Color.BLUE,0);
+		platforms.add(platform);
+		add(platform);
+		
+		platform = new Platform(450,375,100,25,Color.BLUE,0);
 		platforms.add(platform);
 		add(platform);
 		
@@ -229,8 +242,11 @@ public class ConnectIn extends JFrame implements ActionListener
 					if(p.getDamage() > 0)
 					{
 						player.changeHealth(-p.getDamage());
-						player.setDy(-10);
+						player.setDy(-2);
+						
 						player.setFalling(true);
+						player.setEDx(-player.getDx()*5);
+						player.setDx(0);
 					}
 	
 				}
@@ -251,6 +267,20 @@ public class ConnectIn extends JFrame implements ActionListener
 			}
 			else
 			{
+				if(player.isSlamming())
+				{
+					for(Player pl : players)
+					{
+						int diffX = pl.getX()-player.getX();
+						int diffY = pl.getY()-player.getY();	
+						if(!player.equals(pl) && (Math.hypot(diffX, diffY) < 80))
+						{
+							
+							pl.setEDx((diffX/Math.abs(diffX))*(5 - Math.pow(diffX*1.0/40, 2)));
+						}
+					}
+				}
+				player.setSlamming(false);
 				player.addFriction();
 				player.resetJumps();
 			}
@@ -326,7 +356,8 @@ class Handler implements Runnable
 				case "W":
 					
 					//if(!player.isFalling())
-					if(player.numJumpsLeft() > 0)
+					
+					if(player.numJumpsLeft() > 0 && !player.isSlamming())
 					{
 						
 						if(player.isWallSliding())
@@ -360,7 +391,11 @@ class Handler implements Runnable
 					player.setFacing("a");
 					break;
 				case "S":
-					player.setDy(0);
+					if(player.numJumpsLeft() > 0 && !player.isSlamming())
+					{
+						player.setDy(6);
+						player.setSlamming(true);
+					}
 					break;
 				case "D":
 					player.setDx(SPEED);

@@ -26,6 +26,7 @@ public class Player extends JComponent implements Updatable
 	private int jumps = maxJumps; 
 	private String facing = "d";
 	private boolean wallSliding = false;
+	private boolean slamming = false;
 	private int maxHealth = 100;
 	private int health = maxHealth;
 	public Player(double x, double y, Color c, JFrame frame)
@@ -54,25 +55,46 @@ public class Player extends JComponent implements Updatable
 		return new Rectangle(this.getX(),this.getY(),this.getWidth(),this.getHeight());
 		
 	}
-	public void changeHealth(int c){health += c;}
-	public void resetHealth(){health = maxHealth;}
+	public void changeHealth(int c)
+	{
+		health += c;
+		color = new Color((int)(255*(1.0*health/maxHealth)), 0, 0);
+	}
+	public void resetHealth()
+	{
+		health = maxHealth;
+		color = new Color((int)(255*(1.0*health/maxHealth)), 0, 0);
+	}
 	public int getHealth(){return health;}
 	
 	public void setName(String s) { nameTag.setText(s);}
+	
 	public String getName() {return nameTag.getText();}
+	
 	public void setDx(double dx) { this.dx = dx;}
+	
 	public double getDx() {return dx;}
+	
 	public void setDy(double dy) { this.dy = dy;}
+	
 	public double getDy() { return dy;}
+	
 	public void setTryGrab(boolean b) {tryGrab = b;}
+	
 	public boolean isTryGrab() {return tryGrab;}
+	
 	public void setHeldBy(Player p) {heldBy = p;}
+	
 	public Player getHeldBy() {return heldBy;}
+	
 	public void makeInvolentaryFriend(Player p) {holding = p;}
+	
 	public Player getInvolentaryFriend() {return holding;}
 
 	public void setEDx(double edx) { this.edx = edx;}
+	
 	public double getEDx() {return edx;}
+	
 	public void addFriction() 
 	{
 		
@@ -111,17 +133,19 @@ public class Player extends JComponent implements Updatable
 	public boolean isWallSliding() {return wallSliding;}
 	public void setWallSliding(boolean b) {wallSliding = b;}
 	
+	public boolean isSlamming() {return slamming;}
+	public void setSlamming(boolean b) {slamming = b;}
+	
 	public void update()
 	{
-
 		if(health <= 0)
 		{
-			x = 100;
-			y = 100;
+			x = Math.random()*(600-w);
+			y = -30;
 			dx = 0;
 			dy = 0;
 			edx = 0;
-			resetHealth();
+			resetHealth();	
 		}
 		if(heldBy != null)
 		{
@@ -131,22 +155,26 @@ public class Player extends JComponent implements Updatable
 			edx = 0;
 			dy = 0;
 		}
-		
 		else
 		{
 			addFriction();
 			x += edx; 
 			x += dx;
-		
-		//y += dy;
+			
+			//y += dy;
 			
 			if (isFalling())
 			{
+				
 				y += dy;
 				//gravity acc.
 				if(!wallSliding)
 				{
 					dy += 0.2;
+					if(slamming)
+					{
+						dy += 0.1;
+					}
 				}
 				else
 				{
@@ -177,7 +205,6 @@ public class Player extends JComponent implements Updatable
 		
 		this.setPos(x, y);
 		nameTag.setLocation((int)x + w/2 - nameTag.getWidth()/2, (int)y - 20);
-		
 		repaint();
 		
 	}
@@ -193,8 +220,5 @@ public class Player extends JComponent implements Updatable
 		g.setColor(color);
 		g.fillRect(0, 0, 30, 30);
 		
-	}
-	
-	
-		
+	}	
 }
