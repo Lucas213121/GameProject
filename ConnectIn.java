@@ -30,6 +30,7 @@ public class ConnectIn extends JFrame implements ActionListener
 {
 	public static ArrayList<Updatable> characters;
 	public static ArrayList<Player> players;
+	public static ArrayList<Projectile> projectiles;
 	public static JFrame frame; 
 	private static int numPlayers = 0;
 	public ArrayList<Platform> platforms;
@@ -40,7 +41,7 @@ public class ConnectIn extends JFrame implements ActionListener
 		characters = new ArrayList<Updatable>();
 		platforms = new ArrayList<Platform>();
 		players = new ArrayList<Player>();
-			
+		projectiles = new ArrayList<Projectile>();
 		setBounds(100, 100, 600, 600);
 		setResizable(false);
 		setTitle("Game");
@@ -275,15 +276,48 @@ public class ConnectIn extends JFrame implements ActionListener
 						int diffY = pl.getY()-player.getY();	
 						if(!player.equals(pl) && (Math.hypot(diffX, diffY) < 80))
 						{
-							
-							pl.setEDx((diffX/Math.abs(diffX))*(5 - Math.pow(diffX*1.0/40, 2)));
+							if (diffX > 0)
+							{
+								pl.setEDx(pl.getEDx() + (5 - Math.pow(diffX*1.0/40, 2)));
+							}
+							if (diffX < 0)
+							{
+								pl.setEDx(pl.getEDx() - (5 - Math.pow(diffX*1.0/40, 2)));
+							}
+							if (diffY < 0)
+							{
+								pl.setDy(-2);
+							}
+							if (diffY > 0)
+							{
+								pl.setDy(2);	
+							}
 						}
 					}
+					player.setDy(0);
 				}
 				player.setSlamming(false);
 				player.addFriction();
 				player.resetJumps();
 			}
+			
+			for(Projectile p : projectiles)
+			{
+				if(player.getHitbox().contains(p.getLocation()))
+				{
+					player.changeHealth(-p.getDamage());
+					characters.remove(p);
+					remove(p);
+				}
+			}
+			if(player.isTryShoot())
+			{
+				Projectile p = player.shoot();
+				frame.add(p);
+				characters.add(p);
+				projectiles.add(p);
+			}
+			player.setShoot(false);
 			if(player.isTryGrab())
 			{
 				player.setTryGrab(false);
@@ -342,7 +376,7 @@ class Handler implements Runnable
 			
 			name = in.readLine();
 			player.setName(name);
-			final int SPEED = 2;	
+			final int SPEED = 3;	
 			
 			while((message = in.readLine()) != null)
 			{
@@ -372,11 +406,11 @@ class Handler implements Runnable
 								player.setEDx(-1*SPEED);
 								
 							}
-							player.setDy(-2*SPEED);
+							player.setDy(-1*SPEED);
 						}
 						else
 						{
-							player.setDy(-3*SPEED);
+							player.setDy(-2*SPEED);
 						}
 						//jump speed
 						
@@ -401,6 +435,10 @@ class Handler implements Runnable
 					player.setDx(SPEED);
 					player.setFacing("d");
 					
+					break;
+				case "M":
+					player.setShoot(true);
+					System.out.print("Pew");
 					break;
 				
 				case "w":
@@ -442,6 +480,9 @@ class Handler implements Runnable
 						
 					}
 					break;
+				case "m":
+					break;
+				
 				}
 					
 			}

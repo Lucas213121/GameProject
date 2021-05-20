@@ -27,6 +27,7 @@ public class Player extends JComponent implements Updatable
 	private String facing = "d";
 	private boolean wallSliding = false;
 	private boolean slamming = false;
+	private boolean tryShoot= false;
 	private int maxHealth = 100;
 	private int health = maxHealth;
 	public Player(double x, double y, Color c, JFrame frame)
@@ -111,6 +112,19 @@ public class Player extends JComponent implements Updatable
 	public void setX(double i) { x = i;}
 	public void setY(double i) { y = i;}
 	
+	
+	public Projectile shoot()
+	{
+		if(facing.equals("a"))
+		{
+			return(new Projectile((int)x - 5, (int)y+h/2, -2));
+		}
+		else
+		{
+			return(new Projectile((int)x + w + 5, (int)y+h/2, 2));
+		}
+		
+	}
 	public Point getPos()
 	{
 		return new Point((int)x,(int)y);
@@ -196,9 +210,9 @@ public class Player extends JComponent implements Updatable
 			x = 0;
 		}
 		
-		if(x > 550 - w)
+		if(x > 593 - w)
 		{
-			x = 550-w;
+			x = 593-w;
 		}
 		
 		this.setLocation((int)(x), (int)(y)); 
@@ -220,5 +234,7 @@ public class Player extends JComponent implements Updatable
 		g.setColor(color);
 		g.fillRect(0, 0, 30, 30);
 		
-	}	
+	}
+	public void setShoot(boolean b) {tryShoot = b;}
+	public boolean isTryShoot() {return tryShoot;}
 }

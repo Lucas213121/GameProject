@@ -11,18 +11,17 @@ public class Projectile extends JComponent implements Updatable
 	private double rotation, velocity, spread;
 	private Color color;
 	private Ellipse2D.Double circle = new Ellipse2D.Double(0,0,10,10);
-	public Projectile(int x, int y, double d, double rot, double spr)
+	public Projectile(int x, int y, double dx)
 	{
 		this.setSize(new Dimension(10,10));
-		this.setLocation(x,y);
-		posX = x;
-		posY = y;
-		spread = spr;
-		rotation = rot + Math.random()*spread - spread/2;
-		velocity = d;
-		
-		dx = Math.cos(rotation/180.0*Math.PI)*velocity;
-		dy = Math.sin(rotation/180.0*Math.PI)*velocity;
+		this.setLocation(x-5,y-5);
+		posX = x-5;
+		posY = y-5;
+		//spread = spr;
+		//rotation = rot + Math.random()*spread - spread/2;
+		this.dx = dx;
+		//dx = Math.cos(rotation/180.0*Math.PI)*velocity;
+		//dy = Math.sin(rotation/180.0*Math.PI)*velocity;
 		
 	}
 	public Rectangle getRect()
@@ -51,7 +50,6 @@ public class Projectile extends JComponent implements Updatable
 	{
 		posX += dx;
 		posY += dy;
-		dy += 0.09;
 		this.setLocation((int)posX,(int)posY);
 	}
 	public void paintComponent(Graphics g)
@@ -60,5 +58,9 @@ public class Projectile extends JComponent implements Updatable
 		g2.setColor(color);
 		g2.fill(circle);
 		g2.draw(circle);
+	}
+	public int getDamage() 
+	{
+		return 10;
 	}
 }
