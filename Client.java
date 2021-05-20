@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class EchoClient extends JFrame
+public class Client extends JFrame
 {
 	
 	static boolean WTrue = true;
@@ -23,7 +23,7 @@ public class EchoClient extends JFrame
 	static boolean STrue = true;
 	static boolean HTrue = true;
 	
-	public EchoClient(PrintWriter pr)
+	public Client(PrintWriter pr)
 	{
 		
 		
@@ -190,7 +190,7 @@ public class EchoClient extends JFrame
 			
 			Scanner keyboard = new Scanner(System.in);
 			
-			new EchoClient(out);
+			new Client(out);
 			
 			String input;
 			
