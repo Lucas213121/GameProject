@@ -158,9 +158,10 @@ public class ConnectIn extends JFrame implements ActionListener
 		for(Updatable character: characters)
 		{		
 			character.update();
-		}
-		for(Player player : players) 
+		} 
+		for(int i = 0; i<players.size(); i++) 
 		{
+			Player player = players.get(i);
 			boolean onGround = false;
 			player.setWallSliding(false);
 			for(Platform p : platforms)
@@ -319,7 +320,7 @@ public class ConnectIn extends JFrame implements ActionListener
 			
 			if(player.getY() > 600)
 			{
-				
+				players.remove(i);
 			}
 		}
 		repaint();
