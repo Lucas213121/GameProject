@@ -30,6 +30,7 @@ public class ConnectIn extends JFrame implements ActionListener
 {
 	public static ArrayList<Updatable> characters;
 	public static ArrayList<Player> players;
+	public static ArrayList<Projectile> projectiles;
 	public static JFrame frame; 
 	private static int numPlayers = 0;
 	public ArrayList<Platform> platforms;
@@ -40,7 +41,7 @@ public class ConnectIn extends JFrame implements ActionListener
 		characters = new ArrayList<Updatable>();
 		platforms = new ArrayList<Platform>();
 		players = new ArrayList<Player>();
-			
+		projectiles = new ArrayList<Projectile>();
 		setBounds(100, 100, 600, 600);
 		setResizable(false);
 		setTitle("Game");
@@ -51,7 +52,6 @@ public class ConnectIn extends JFrame implements ActionListener
 		
 		//how to create new platforms for now
 		
-		/**
 		platform = new Platform(0,500,250,100,Color.BLUE,0);
 		platforms.add(platform);
 		add(platform);
@@ -74,11 +74,6 @@ public class ConnectIn extends JFrame implements ActionListener
 		add(platform);
 		
 		platform = new Platform(450,375,100,25,Color.BLUE,0);
-		platforms.add(platform);
-		add(platform);
-		**/
-		
-		platform = new Platform(100, 300, 400, 50, Color.BLACK, 0);
 		platforms.add(platform);
 		add(platform);
 		
@@ -120,7 +115,7 @@ public class ConnectIn extends JFrame implements ActionListener
 				players.add(player);
 				frame.add(player);
 				
-				/*
+				/*heal
 				player = new Player(Math.random()*200,Math.random()*200,Color.RED, frame);
 				characters.add(player);
 				players.add(player);
@@ -158,10 +153,9 @@ public class ConnectIn extends JFrame implements ActionListener
 		for(Updatable character: characters)
 		{		
 			character.update();
-		} 
-		for(int i = 0; i<players.size(); i++) 
+		}
+		for(Player player : players) 
 		{
-			Player player = players.get(i);
 			boolean onGround = false;
 			player.setWallSliding(false);
 			for(Platform p : platforms)
@@ -252,8 +246,7 @@ public class ConnectIn extends JFrame implements ActionListener
 						player.setDy(-2);
 						
 						player.setFalling(true);
-						player.setEDx(-player.getDx()*5);
-						player.setDx(0);
+						player.setDx(2);
 					}
 	
 				}
@@ -282,15 +275,50 @@ public class ConnectIn extends JFrame implements ActionListener
 						int diffY = pl.getY()-player.getY();	
 						if(!player.equals(pl) && (Math.hypot(diffX, diffY) < 80))
 						{
-							
-							pl.setEDx((diffX/Math.abs(diffX))*(5 - Math.pow(diffX*1.0/40, 2)));
+							if (diffX > 0)
+							{
+								pl.setDx(pl.getDx() + (5 - Math.pow(diffX*1.0/40, 2)));
+							}
+							if (diffX < 0)
+							{
+								pl.setDx(pl.getDx() - (5 - Math.pow(diffX*1.0/40, 2)));
+							}
+							if (diffY < 0)
+							{
+								pl.setDy(-2);
+							}
+							if (diffY > 0)
+							{
+								pl.setDy(2);	
+							}
 						}
 					}
+					player.setDy(0);
 				}
 				player.setSlamming(false);
-				player.addFriction();
+				
 				player.resetJumps();
 			}
+			
+			for(int i = 0; i < projectiles.size(); i++)
+			{
+				Projectile p = projectiles.get(i);
+				if(player.getHitbox().contains(p.getLocation()))
+				{
+					player.changeHealth(-p.getDamage());
+					characters.remove(p);
+					remove(p);
+					projectiles.remove(p);
+				}
+			}
+			if(player.isTryShoot())
+			{
+				Projectile p = player.shoot();
+				frame.add(p);
+				characters.add(p);
+				projectiles.add(p);
+			}
+			player.setShoot(false);
 			if(player.isTryGrab())
 			{
 				player.setTryGrab(false);
@@ -316,11 +344,6 @@ public class ConnectIn extends JFrame implements ActionListener
 						player.setHeldBy(null);
 					}
 				}
-			}
-			
-			if(player.getY() > 600)
-			{
-				players.remove(i);
 			}
 		}
 		repaint();
@@ -354,7 +377,7 @@ class Handler implements Runnable
 			
 			name = in.readLine();
 			player.setName(name);
-			final int SPEED = 2;	
+			final int SPEED = 3;	
 			
 			while((message = in.readLine()) != null)
 			{
@@ -376,19 +399,19 @@ class Handler implements Runnable
 						{
 							if(player.getFacing().equals("a"))
 							{
-								player.setEDx(1*SPEED);
+								player.setDx(1*SPEED);
 								
 							}
 							else
 							{
-								player.setEDx(-1*SPEED);
+								player.setDx(-1*SPEED);
 								
 							}
-							player.setDy(-2*SPEED);
+							player.setDy(-1*SPEED);
 						}
 						else
 						{
-							player.setDy(-3*SPEED);
+							player.setDy(-2*SPEED);
 						}
 						//jump speed
 						
@@ -413,6 +436,10 @@ class Handler implements Runnable
 					player.setDx(SPEED);
 					player.setFacing("d");
 					
+					break;
+				case "M":
+					player.setShoot(true);
+					System.out.print("Pew");
 					break;
 				
 				case "w":
@@ -440,13 +467,13 @@ class Handler implements Runnable
 						int r = (int) (4);
 						if(player.getFacing().equals("d"))
 						{
-							f.setEDx(r);
+							f.setDx(r);
 							f.setDy(-r);
 						}
 						
 						else //if(player.getFacing().equals("a"))
 						{
-							f.setEDx(-r);
+							f.setDx(-r);
 							f.setDy(-r);
 						}
 						
@@ -454,6 +481,9 @@ class Handler implements Runnable
 						
 					}
 					break;
+				case "m":
+					break;
+				
 				}
 					
 			}

@@ -12,9 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 public class Player extends JComponent implements Updatable
-{
-	
-	private double dx, dy, x, y, edx, edy;
+{	
+	private double dx, dy, x, y;
 	private int w = 20, h = 20; 
 	private Color color;
 	private boolean falling = true;
@@ -27,9 +26,12 @@ public class Player extends JComponent implements Updatable
 	private String facing = "d";
 	private boolean wallSliding = false;
 	private boolean slamming = false;
+	private boolean tryShoot= false;
 	private int maxHealth = 100;
 	private int health = maxHealth;
-	private int lives = 3;
+	
+	private int maxBullets = 5;
+	private int bullets = maxBullets;
 	public Player(double x, double y, Color c, JFrame frame)
 	{
 		
@@ -59,6 +61,8 @@ public class Player extends JComponent implements Updatable
 	public void changeHealth(int c)
 	{
 		health += c;
+		if( health < 0)
+			health = 0;
 		color = new Color((int)(255*(1.0*health/maxHealth)), 0, 0);
 	}
 	public void resetHealth()
@@ -92,26 +96,24 @@ public class Player extends JComponent implements Updatable
 	
 	public Player getInvolentaryFriend() {return holding;}
 
-	public void setEDx(double edx) { this.edx = edx;}
 	
-	public double getEDx() {return edx;}
-	
-	public void addFriction() 
-	{
-		
-		if(edx  > 0)
-			edx -= 0.03;
-		else
-			edx += 0.03;
-		if(Math.abs(edx) < 0.1)
-		{
-			edx = 0;
-		}
-	}
 	
 	public void setX(double i) { x = i;}
 	public void setY(double i) { y = i;}
 	
+	
+	public Projectile shoot()
+	{
+		if(facing.equals("a"))
+		{
+			return(new Projectile((int)x - 5, (int)y+h/2, -7));
+		}
+		else
+		{
+			return(new Projectile((int)x + w + 5, (int)y+h/2, 7));
+		}
+		
+	}
 	public Point getPos()
 	{
 		return new Point((int)x,(int)y);
@@ -145,7 +147,6 @@ public class Player extends JComponent implements Updatable
 			y = -30;
 			dx = 0;
 			dy = 0;
-			edx = 0;
 			resetHealth();	
 		}
 		if(heldBy != null)
@@ -153,13 +154,10 @@ public class Player extends JComponent implements Updatable
 			x = heldBy.getX();
 			y = heldBy.getY()-30;
 			dx = 0;
-			edx = 0;
 			dy = 0;
 		}
 		else
 		{
-			addFriction();
-			x += edx; 
 			x += dx;
 			
 			//y += dy;
@@ -179,7 +177,6 @@ public class Player extends JComponent implements Updatable
 				}
 				else
 				{
-					edx = 0; 
 					if(dy > 1);
 					{
 						dy = 1;
@@ -191,11 +188,21 @@ public class Player extends JComponent implements Updatable
 			}
 		}
 		
-		if(y > 600)
+		
+		if(x < 0)
 		{
-			changeHealth(0);
+			x = 0;
 		}
 		
+		if(x > 593 - w)
+		{
+			x = 593-w;
+		}
+
+		if(y > 600)
+		{
+			changeHealth(100);
+		}
 		this.setLocation((int)(x), (int)(y)); 
 		
 		this.setPos(x, y);
@@ -216,14 +223,6 @@ public class Player extends JComponent implements Updatable
 		g.fillRect(0, 0, 30, 30);
 		
 	}
-	
-	public int retLives()
-	{
-		return lives;
-	}
-	
-	public void playerDeath()
-	{
-		lives--;
-	}
+	public void setShoot(boolean b) {tryShoot = b;}
+	public boolean isTryShoot() {return tryShoot;}
 }
