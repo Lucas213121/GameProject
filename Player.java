@@ -17,11 +17,11 @@ public class Player extends JComponent implements Updatable
 	private int w = 20, h = 20; 
 	private Color color;
 	private boolean falling = true;
-	private JLabel nameTag;
+	private JLabel nameTag, healthTag;
 	private JFrame frame;
 	private boolean tryGrab = false;
 	private Player heldBy, holding;
-	private int maxJumps = 4;
+	private int maxJumps = 2;
 	private int jumps = maxJumps; 
 	private String facing = "d";
 	private boolean wallSliding = false;
@@ -29,7 +29,8 @@ public class Player extends JComponent implements Updatable
 	private boolean tryShoot= false;
 	private int maxHealth = 100;
 	private int health = maxHealth;
-	
+	private boolean reloading, firing;
+	private int reloadEnd,  fireEnd;
 	private int maxBullets = 5;
 	private int bullets = maxBullets;
 	public Player(double x, double y, Color c, JFrame frame)
@@ -47,10 +48,16 @@ public class Player extends JComponent implements Updatable
 		nameTag.setFont(new Font("Helvetica", Font.BOLD, 13));
 		nameTag.setSize(100,20);
 		
+		healthTag = new JLabel("100", SwingConstants.CENTER);
+		
+		healthTag.setFont(new Font("Helvetica", Font.BOLD, 13));
+		healthTag.setSize(100,20);
+		
 		//nameTag.setLocation(100, 100);
 		color = c;
 		this.frame = frame;
 		frame.add(nameTag);
+		frame.add(healthTag);
 		
 	}
 	public Rectangle getHitbox()
@@ -64,11 +71,13 @@ public class Player extends JComponent implements Updatable
 		if( health < 0)
 			health = 0;
 		color = new Color((int)(255*(1.0*health/maxHealth)), 0, 0);
+		healthTag.setText(health + "");
 	}
 	public void resetHealth()
 	{
 		health = maxHealth;
 		color = new Color((int)(255*(1.0*health/maxHealth)), 0, 0);
+		healthTag.setText(health + "");
 	}
 	public int getHealth(){return health;}
 	
@@ -97,6 +106,26 @@ public class Player extends JComponent implements Updatable
 	public Player getInvolentaryFriend() {return holding;}
 
 	
+	public boolean startReload() 
+	{
+		if (bullets != maxBullets)
+		{
+			reloadEnd = (int) ((System.currentTimeMillis() / 1000l) + 1);
+			reloading = true;
+			setObjectColor(Color.RED);
+			return(true);
+		}
+		return(false);
+	}
+
+	public boolean isReloading()
+	{
+		return reloading;
+	}
+	public boolean isfiring()
+	{
+		return firing;
+	}
 	
 	public void setX(double i) { x = i;}
 	public void setY(double i) { y = i;}
@@ -141,6 +170,26 @@ public class Player extends JComponent implements Updatable
 	
 	public void update()
 	{
+		if (reloading)
+		{
+			
+			if (System.currentTimeMillis() / 1000l > reloadEnd)
+			{
+				reloading = false;
+				bullets = maxBullets;
+				setObjectColor(Color.BLUE);
+			}
+		}
+		if (firing)
+		{
+			
+			if (System.currentTimeMillis() / 1000l > fireEnd)
+			{
+				firing = false;
+				setObjectColor(Color.BLUE);
+			}
+		}
+		
 		if(health <= 0)
 		{
 			x = Math.random()*(600-w);
@@ -206,7 +255,8 @@ public class Player extends JComponent implements Updatable
 		this.setLocation((int)(x), (int)(y)); 
 		
 		this.setPos(x, y);
-		nameTag.setLocation((int)x + w/2 - nameTag.getWidth()/2, (int)y - 20);
+		nameTag.setLocation((int)x + w/2 - nameTag.getWidth()/2, (int)y - 30);
+		healthTag.setLocation((int)x + w/2 - healthTag.getWidth()/2, (int)y - 15);
 		repaint();
 		
 	}
@@ -224,5 +274,6 @@ public class Player extends JComponent implements Updatable
 		
 	}
 	public void setShoot(boolean b) {tryShoot = b;}
-	public boolean isTryShoot() {return tryShoot;}
+	public boolean isTryShoot()
+	{return tryShoot;}
 }

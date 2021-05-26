@@ -106,7 +106,7 @@ public class ConnectIn extends JFrame implements ActionListener
 				Socket client = server.accept();
 				System.out.println("server accepted client");
 				
-				
+				System.out.print("WHY");
 				Player player = new Player(Math.random()*200,Math.random()*200,Color.RED, frame);
 				
 				Handler clientThread = new Handler(client,numPlayers, player);
@@ -131,7 +131,7 @@ public class ConnectIn extends JFrame implements ActionListener
 			}
 			catch(Exception e)
 			{
-				System.out.println("there was an issue");
+				System.out.println("there was an issue, 1");
 			}
 		}
 	}
@@ -370,6 +370,7 @@ class Handler implements Runnable
 		{
 					
 			
+			
 			BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			PrintWriter out = new PrintWriter(client.getOutputStream(),true);
 			
@@ -493,7 +494,7 @@ class Handler implements Runnable
 		}
 		catch(Exception e)
 		{
-			System.out.println("there was an issue");
+			System.out.println("there was an issue, 2");
 		}
 		
 	}
