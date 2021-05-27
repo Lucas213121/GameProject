@@ -77,6 +77,10 @@ public class ConnectIn extends JFrame implements ActionListener
 		platforms.add(platform);
 		add(platform);
 		
+		platform = new Platform(500,50,50,300,Color.BLUE,0);
+		platforms.add(platform);
+		add(platform);
+		
 		frame = this;
 
 		characters = new ArrayList<Updatable>();
