@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -6,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -22,18 +25,24 @@ public class EchoClient extends JFrame
 	static boolean DTrue = true;
 	static boolean STrue = true;
 	static boolean HTrue = true;
+	static boolean MTrue = true;
+	public ArrayList<Platform> platforms = new ArrayList<Platform>();
+	private boolean isStageClear;
+	private Platform platform;
 	
-	public EchoClient(PrintWriter pr)
+	public JFrame frame = this;
+	public EchoClient(BufferedReader i, PrintWriter pr)
 	{
 		
-		
+		final BufferedReader in = i;
 		final PrintWriter p = pr;
 		setTitle("Instructions");
 		setResizable(false);
 		setLayout(null);
 		
-		setSize(700, 500);
+		setSize(600, 600);
 		setLocation(100,100);
+		
 		
 		final JLabel j = new JLabel("Name: ");
 		final JTextField t = new JTextField();
@@ -51,15 +60,24 @@ public class EchoClient extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				p.println(t.getText());
-				j.setFocusable(false);
-				t.setFocusable(false);
-				send.setFocusable(false);
+				setStage(p, j, t, send);
+				repaint();
+				
+				if(isStageClear == true)
+				{
+					for( Platform plat : createStage(platforms))
+					{
+						frame.add(plat);
+					}
+					repaint();
+				}
 			}
 			
 		});
 		
 		add(send);
+		
+		
 		
 		
 		this.addKeyListener(new KeyListener()
@@ -113,6 +131,15 @@ public class EchoClient extends JFrame
 						HTrue = false;
 					}
 				}
+				
+				if(e.getKeyCode() == e.VK_M)
+				{
+					while(MTrue != false)
+					{
+						p.println("M");
+						MTrue = false;
+					}
+				}
 			}
 
 			@Override
@@ -158,6 +185,15 @@ public class EchoClient extends JFrame
 						HTrue = true;
 					}
 				}
+				
+				if(e.getKeyCode() == e.VK_M)
+				{
+					while(MTrue != true)
+					{
+						p.println("m");
+						MTrue = true;
+					}
+				}
 			}
 
 			@Override
@@ -183,14 +219,14 @@ public class EchoClient extends JFrame
 		
 		try
 		{
-			Socket client = new Socket("10.30.36.85",9999);
+			Socket client = new Socket("10.30.39.42",9999);
 						
 			BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			PrintWriter out = new PrintWriter(client.getOutputStream(),true);
 			
 			Scanner keyboard = new Scanner(System.in);
 			
-			new EchoClient(out);
+			new EchoClient(in, out);
 			
 			String input;
 			
@@ -200,10 +236,7 @@ public class EchoClient extends JFrame
 				out.println(input);
 				String response;
 				
-				response = in.readLine();
 				
-				System.out.println("Message Recieved: " + response);
-				System.out.println("outgoing:::");
 			}
 			client.close();
 			
@@ -213,6 +246,44 @@ public class EchoClient extends JFrame
 			System.out.println("There was an issue in the connection");
 		}
 
+	}
+	private void setStage(PrintWriter p, JLabel j, JTextField t, JButton send)
+	{
+		p.println(t.getText());
+		j.setFocusable(false);
+		remove(j);
+		t.setFocusable(false);
+		remove(t);
+		send.setFocusable(false);
+		remove(send);
+		isStageClear = true;
+	}
+	
+	private ArrayList<Platform> createStage(ArrayList<Platform> platforms)
+	{
+		platform = new Platform(0,500,250,100,Color.BLUE,0);
+		platforms.add(platform);
+		
+		platform = new Platform(350,500,250,100,Color.BLUE,0);
+		platforms.add(platform);
+		
+		platform = new Platform(250,300,100,300,Color.RED,25);
+		platforms.add(platform);
+		
+		
+		platform = new Platform(250,275,100,25,Color.BLUE,0);
+		platforms.add(platform);
+		
+		platform = new Platform(50,375,100,25,Color.BLUE,0);
+		platforms.add(platform);
+		
+		platform = new Platform(450,375,100,25,Color.BLUE,0);
+		platforms.add(platform);
+		
+		platform = new Platform(500,50,50,300,Color.BLUE,0);
+		platforms.add(platform);
+		
+		return platforms;
 	}
 	
 	
