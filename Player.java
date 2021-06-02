@@ -30,9 +30,10 @@ public class Player extends JComponent implements Updatable
 	private int maxHealth = 100;
 	private int health = maxHealth;
 	private boolean reloading, firing;
-	private int reloadEnd,  fireEnd;
+	private int reloadEnd = 0,  fireEnd = 0;
 	private int maxBullets = 5;
 	private int bullets = maxBullets;
+	private int lives = 3;
 	public Player(double x, double y, Color c, JFrame frame)
 	{
 		
@@ -78,9 +79,11 @@ public class Player extends JComponent implements Updatable
 		health = maxHealth;
 		color = new Color((int)(255*(1.0*health/maxHealth)), 0, 0);
 		healthTag.setText(health + "");
+		lives -= 1;
 	}
 	public int getHealth(){return health;}
 	
+	public int getLives(){return lives;}
 	public void setName(String s) { nameTag.setText(s);}
 	
 	public String getName() {return nameTag.getText();}
@@ -133,15 +136,21 @@ public class Player extends JComponent implements Updatable
 	
 	public Projectile shoot()
 	{
-		if(facing.equals("a"))
+		if(bullets > 0)
 		{
-			return(new Projectile((int)x - 5, (int)y+h/2, -7));
+			bullets -= 1;
+			if(facing.equals("a"))
+			{
+				return(new Projectile((int)x - 5, (int)y+h/2, -7));
+			}
+			else
+			{
+				return(new Projectile((int)x + w + 5, (int)y+h/2, 7));
+			}
 		}
-		else
-		{
-			return(new Projectile((int)x + w + 5, (int)y+h/2, 7));
-		}
-		
+		return null;
+				
+			
 	}
 	public Point getPos()
 	{
@@ -186,17 +195,24 @@ public class Player extends JComponent implements Updatable
 			if (System.currentTimeMillis() / 1000l > fireEnd)
 			{
 				firing = false;
-				setObjectColor(Color.BLUE);
+				setObjectColor(Color.GREEN);
 			}
 		}
 		
 		if(health <= 0)
 		{
-			x = Math.random()*(600-w);
-			y = -30;
-			dx = 0;
-			dy = 0;
-			resetHealth();	
+			if(lives != 0)
+			{
+				x = Math.random()*(600-w);
+				y = -30;
+				dx = 0;
+				dy = 0;
+				resetHealth();	
+			}
+			else
+			{
+				y = 1000000;
+			}
 		}
 		if(heldBy != null)
 		{

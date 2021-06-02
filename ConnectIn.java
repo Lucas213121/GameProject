@@ -113,7 +113,7 @@ public class ConnectIn extends JFrame implements ActionListener
 				System.out.print("WHY");
 				Player player = new Player(Math.random()*200,Math.random()*200,Color.RED, frame);
 				
-				Handler clientThread = new Handler(client,numPlayers, player);
+				Handler clientThread = new Handler(client,numPlayers, player, players);
 				
 				characters.add(player);
 				players.add(player);
@@ -317,10 +317,15 @@ public class ConnectIn extends JFrame implements ActionListener
 			}
 			if(player.isTryShoot())
 			{
-				Projectile p = player.shoot();
-				frame.add(p);
-				characters.add(p);
-				projectiles.add(p);
+				Object o = player.shoot();
+				
+				if(o != null)
+				{
+					Projectile p = (Projectile) o; 
+					frame.add(p);
+					characters.add(p);
+					projectiles.add(p);
+				}
 			}
 			player.setShoot(false);
 			if(player.isTryGrab())
@@ -360,11 +365,13 @@ class Handler implements Runnable
 	private String name;
 	private final int ID;
 	private Player player;
-	public Handler(Socket s, int id, Player p)
+	private ArrayList<Player> players;
+	public Handler(Socket s, int id, Player p, ArrayList<Player> players)
 	{
 		client = s;
 		this.ID = id;
 		this. player = p;
+		this.players = players;
 	}
 	
 	@Override
@@ -381,6 +388,10 @@ class Handler implements Runnable
 			String message;
 			
 			name = in.readLine();
+			if(name.toUpperCase().contains("VISH"))
+			{
+				name = "dumb";
+			}
 			player.setName(name);
 			final int SPEED = 3;	
 			
@@ -488,9 +499,18 @@ class Handler implements Runnable
 					break;
 				case "m":
 					break;
-				
 				}
-					
+				String output = "";
+				for(Player p : players)
+				{
+					output += "p1x";
+					output += p.getX();
+					output += "y";
+					output += p.getY();
+				}
+				
+				out.print(output);
+				
 			}
 			System.out.print("why are you like this");
 			client.close();
