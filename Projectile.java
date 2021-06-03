@@ -4,12 +4,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-public class Projectile extends JLabel implements Updatable
+public class Projectile extends JComponent implements Updatable
 {
 	double dx, dy, posX, posY;
 	private double rotation, velocity, spread;
@@ -17,7 +13,7 @@ public class Projectile extends JLabel implements Updatable
 	private Ellipse2D.Double circle = new Ellipse2D.Double(0,0,10,10);
 	public Projectile(int x, int y, double dx)
 	{
-		this.setSize(10,10);
+		this.setSize(new Dimension(10,10));
 		this.setLocation(x-5,y-5);
 		posX = x-5;
 		posY = y-5;
@@ -26,7 +22,6 @@ public class Projectile extends JLabel implements Updatable
 		this.dx = dx;
 		//dx = Math.cos(rotation/180.0*Math.PI)*velocity;
 		//dy = Math.sin(rotation/180.0*Math.PI)*velocity;
-		setIcon(new ImageIcon ("C:\\Users\\vjagannathan22\\OneDrive - Great Valley School District\\11th Grade\\5. AP Comp Sci\\Final Project Game"));
 		
 	}
 	public Rectangle getRect()

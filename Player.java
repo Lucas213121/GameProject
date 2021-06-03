@@ -115,7 +115,7 @@ public class Player extends JComponent implements Updatable
 		{
 			reloadEnd = (int) ((System.currentTimeMillis() / 1000l) + 1);
 			reloading = true;
-			setObjectColor(Color.RED);
+			//setObjectColor(Color.RED);
 			return(true);
 		}
 		return(false);
@@ -207,7 +207,8 @@ public class Player extends JComponent implements Updatable
 				y = -30;
 				dx = 0;
 				dy = 0;
-				resetHealth();	
+				resetHealth();
+				System.out.print("revive");
 			}
 			else
 			{
@@ -266,7 +267,7 @@ public class Player extends JComponent implements Updatable
 
 		if(y > 600)
 		{
-			changeHealth(100);
+			changeHealth(-100);
 		}
 		this.setLocation((int)(x), (int)(y)); 
 		

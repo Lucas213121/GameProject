@@ -51,35 +51,64 @@ public class ConnectIn extends JFrame implements ActionListener
 		Platform platform;
 		
 		//how to create new platforms for now
+		ArrayList<ArrayList<Platform>> maps = new ArrayList<ArrayList<Platform>>();
+		
+		
+		ArrayList<Platform> map = new ArrayList<Platform>();
 		
 		platform = new Platform(0,500,250,100,Color.BLUE,0);
-		platforms.add(platform);
-		add(platform);
+		map.add(platform);
 		
 		platform = new Platform(350,500,250,100,Color.BLUE,0);
-		platforms.add(platform);
-		add(platform);
+		map.add(platform);
 		
 		platform = new Platform(250,300,100,300,Color.RED,25);
-		platforms.add(platform);
-		add(platform);
-		
+		map.add(platform);
 		
 		platform = new Platform(250,275,100,25,Color.BLUE,0);
-		platforms.add(platform);
-		add(platform);
+		map.add(platform);
 		
 		platform = new Platform(50,375,100,25,Color.BLUE,0);
-		platforms.add(platform);
-		add(platform);
+		map.add(platform);
 		
 		platform = new Platform(450,375,100,25,Color.BLUE,0);
-		platforms.add(platform);
-		add(platform);
+		map.add(platform);
 		
-		platform = new Platform(500,50,50,300,Color.BLUE,0);
-		platforms.add(platform);
-		add(platform);
+		maps.add(map);
+		
+		map = new ArrayList<Platform>();
+		
+		platform = new Platform(20,50,50,200,Color.BLUE,0);
+		map.add(platform);
+		
+		platform = new Platform(530,50,50,200,Color.BLUE,0);
+		map.add(platform);
+		
+		platform = new Platform(20,150,150,50,Color.BLUE,0);
+		map.add(platform);
+		
+		platform = new Platform(430,150,150,50,Color.BLUE,0);
+		map.add(platform);
+		
+		platform = new Platform(20,500,200,50,Color.BLUE,0);
+		map.add(platform);
+		
+		platform = new Platform(380,500,200,50,Color.BLUE,0);
+		map.add(platform);
+		
+		platform = new Platform(200,300,200,50,Color.BLUE,0);
+		map.add(platform);
+		
+		platform = new Platform(100,400,50,100,Color.BLUE,0);
+		map.add(platform);
+		
+		maps.add(map);
+		System.out.print(maps.size());
+		for(Platform p : maps.get(1))
+		{
+			platforms.add(platform);
+			add(p);
+		}
 		
 		frame = this;
 
@@ -110,8 +139,8 @@ public class ConnectIn extends JFrame implements ActionListener
 				Socket client = server.accept();
 				System.out.println("server accepted client");
 				
-				System.out.print("WHY");
-				Player player = new Player(Math.random()*200,Math.random()*200,Color.RED, frame);
+				Color color = new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
+				Player player = new Player(Math.random()*200,Math.random()*200,color, frame);
 				
 				Handler clientThread = new Handler(client,numPlayers, player, players);
 				
@@ -500,6 +529,7 @@ class Handler implements Runnable
 				case "m":
 					break;
 				}
+				/*
 				String output = "";
 				for(Player p : players)
 				{
@@ -510,7 +540,7 @@ class Handler implements Runnable
 				}
 				
 				out.print(output);
-				
+				*/
 			}
 			System.out.print("why are you like this");
 			client.close();
