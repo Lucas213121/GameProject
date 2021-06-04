@@ -22,6 +22,7 @@ public class Client extends JFrame
 	static boolean DTrue = true;
 	static boolean STrue = true;
 	static boolean HTrue = true;
+	static boolean MTrue = true;
 	
 	public Client(PrintWriter pr)
 	{
@@ -113,6 +114,14 @@ public class Client extends JFrame
 						HTrue = false;
 					}
 				}
+				if(e.getKeyCode() == e.VK_SPACE)
+				{
+					while(MTrue != false)
+					{
+						p.println("M");
+						MTrue = false;
+					}
+				}
 			}
 
 			@Override
@@ -158,6 +167,14 @@ public class Client extends JFrame
 						HTrue = true;
 					}
 				}
+				if(e.getKeyCode() == e.VK_SPACE)
+				{
+					while(MTrue != true)
+					{
+						p.println("m");
+						MTrue = true;
+					}
+				}
 			}
 
 			@Override
@@ -183,7 +200,7 @@ public class Client extends JFrame
 		
 		try
 		{
-			Socket client = new Socket("10.30.36.85",9999);
+			Socket client = new Socket("10.30.39.42",9999);
 						
 			BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			PrintWriter out = new PrintWriter(client.getOutputStream(),true);
